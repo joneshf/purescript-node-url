@@ -5,21 +5,33 @@ var gulp       = require('gulp')
   ;
 
 var paths = {
-    src: [ 'src/**/*.purs'
-         , 'bower_components/purescript-*/src/**/*.purs'
-         ]
-}
+    src: 'src/**/*.purs',
+    bowerSrc: 'bower_components/purescript-*/src/**/*.purs',
+    dest: '',
+    docsDest: 'README.md'
+};
+
+var options = {};
 
 gulp.task('compile', function() {
-    return gulp.src(paths.src)
-        .pipe(purescript.pscMake())
-        .pipe(gulp.dest(''));
+    var pscMake = purescript.pscMake(options);
+    pscMake.on('error', function(e) {
+        console.error(e.message);
+        pscMake.end();
+    });
+    return gulp.src([paths.src, paths.bowerSrc])
+        .pipe(pscMake)
+        .pipe(gulp.dest(paths.dest));
 });
 
 gulp.task('docs', function() {
-    return gulp.src('src/**/*.purs')
+    return gulp.src(paths.src)
       .pipe(purescript.docgen())
-      .pipe(gulp.dest('README.md'));
+      .pipe(gulp.dest(paths.docsDest));
 });
 
-gulp.task('default', ['compile', 'docs']);
+gulp.task('watch', function() {
+    gulp.watch(paths.src, ['compile', 'docs']);
+});
+
+gulp.task('default', ['compile', 'docs', 'watch']);
