@@ -1,0 +1,9 @@
+{
+  "name": "purescript-node-url",
+  "version": "0.0.0",
+  "description": "PureScript wrapper for Node URL.",
+  "license": "MIT",
+  "devDependencies": {
+    "purescript-maybe": "~0.1.3"
+  }
+}
